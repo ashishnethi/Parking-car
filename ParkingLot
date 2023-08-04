@@ -1,23 +1,40 @@
-package parking;
-
-import java.util.List;
+import java.util.*;
 
 public class ParkingLot {
 
-    public List<Level> levels;
+    private PriorityQueue<Level> levelsQueue;
 
-    public ParkingLot(List<Level> levels){
-        this.levels = levels;
+    public ParkingLot(List<Level> levels) {
+        // Initialize the priority queue with a custom comparator
+        levelsQueue = new PriorityQueue<>(Comparator.comparingInt(this::getNearestLevelAndNumAvailableSlots));
+        
+        // Add all levels to the queue
+        levelsQueue.addAll(levels);
     }
 
-    public boolean park(Car car){
-        for(Level level:levels){
-            if(level.park(car)){
-                return true;
-            }else{
-                continue;
-            }
+    public boolean park(Car car) {
+        Level bestLevel = levelsQueue.peek();
+
+        if (bestLevel == null || bestLevel.findAvailableSpot() == null) {
+            return false; // Parking is full
         }
-        return false;
+
+        // Park the car in the best level with available slots
+        boolean isParked = bestLevel.park(car);
+
+        if (!isParked) {
+            return false; // Parking failed
+        }
+
+        // Update the priority queue to maintain the correct order of levels
+        levelsQueue.remove();
+        levelsQueue.add(bestLevel);
+
+        return true; // Car parked successfully
+    }
+
+    private int getNearestLevelAndNumAvailableSlots(Level level) {
+        // Combine entry distance, level number, and number of available slots to create a unique comparison value
+        return level.entryDistance * 1000 + level.levelNumber * 100 + (level.rows * level.SLOTS_PER_ROW - level.takenSlots.size());
     }
 }
