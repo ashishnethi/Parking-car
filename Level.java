@@ -8,12 +8,13 @@ public class Level {
     public int rows;
     public List<ParkingSlot> takenSlots;
     public int SLOTS_PER_ROW = 2;
+      public int entryDistance; // Attribute to represent the distance from the entry point
 
     public Level(int rows, int levelNumber){
         this.levelNumber = levelNumber;
         this.rows = rows;
         this.takenSlots = new LinkedList<>();
-
+         this.entryDistance = entryDistance;
     }
 
     public ParkingSlot findAvailableSpot(){
