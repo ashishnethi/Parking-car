@@ -6,5 +6,6 @@ public class Car {
 
     public Car(String licenseNumber){
         this.licenseNumber = licenseNumber;
+        //This is to add the licenseNumber of the car
     }
 }
